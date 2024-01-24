@@ -2,7 +2,6 @@ package com.example.college_planner;
 
 import android.graphics.Color;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
