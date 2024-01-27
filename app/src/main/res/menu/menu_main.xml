@@ -3,8 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.college_planner.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_add_class"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_add_class"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_assignment"
+        android:orderInCategory="100"
+        android:title="@string/action_add_assignment"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_exam"
+        android:orderInCategory="100"
+        android:title="@string/action_add_exam"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_todo"
+        android:orderInCategory="100"
+        android:title="@string/action_add_todo"
         app:showAsAction="never" />
 </menu>

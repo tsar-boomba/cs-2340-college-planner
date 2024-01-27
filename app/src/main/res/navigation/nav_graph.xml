@@ -7,7 +7,56 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.college_planner.FirstFragment"
+        android:name="com.example.college_planner.MainFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first"/>
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_FirstFragment_to_addClassFragment"
+            app:destination="@id/addClassFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_addAssignmentFragment"
+            app:destination="@id/addAssignmentFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_addExamFragment"
+            app:destination="@id/addExamFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_addTodoFragment"
+            app:destination="@id/addTodoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addClassFragment"
+        android:name="com.example.college_planner.AddClassFragment"
+        android:label="fragment_add_class"
+        tools:layout="@layout/fragment_add_class" >
+        <action
+            android:id="@+id/action_addClassFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAssignmentFragment"
+        android:name="com.example.college_planner.AddAssignmentFragment"
+        android:label="fragment_add_assignment"
+        tools:layout="@layout/fragment_add_assignment" >
+        <action
+            android:id="@+id/action_addAssignmentFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExamFragment"
+        android:name="com.example.college_planner.AddExamFragment"
+        android:label="fragment_add_exam"
+        tools:layout="@layout/fragment_add_exam" >
+        <action
+            android:id="@+id/action_addExamFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTodoFragment"
+        android:name="com.example.college_planner.AddTodoFragment"
+        android:label="fragment_add_todo"
+        tools:layout="@layout/fragment_add_todo" >
+        <action
+            android:id="@+id/action_addTodoFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
 </navigation>
