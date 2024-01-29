@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/MainFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/MainFragment"
         android:name="com.example.college_planner.MainFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/main_fragment_label"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_FirstFragment_to_addClassFragment"
@@ -30,7 +30,7 @@
         tools:layout="@layout/fragment_add_class" >
         <action
             android:id="@+id/action_addClassFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/MainFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAssignmentFragment"
@@ -39,7 +39,7 @@
         tools:layout="@layout/fragment_add_assignment" >
         <action
             android:id="@+id/action_addAssignmentFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/MainFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExamFragment"
@@ -48,7 +48,7 @@
         tools:layout="@layout/fragment_add_exam" >
         <action
             android:id="@+id/action_addExamFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/MainFragment" />
     </fragment>
     <fragment
         android:id="@+id/addTodoFragment"
@@ -57,6 +57,6 @@
         tools:layout="@layout/fragment_add_todo" >
         <action
             android:id="@+id/action_addTodoFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/MainFragment" />
     </fragment>
 </navigation>

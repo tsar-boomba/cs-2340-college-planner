@@ -5,8 +5,7 @@
     <string name="action_add_exam">Add Exam</string>
     <string name="action_add_todo">Add Todo</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="main_fragment_label">Main Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
