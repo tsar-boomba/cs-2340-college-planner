@@ -73,4 +73,17 @@ public class Class implements Event {
     public Color color() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "Class{" +
+                "name='" + name + '\'' +
+                ", teacher='" + teacher + '\'' +
+                ", lectureLocation='" + lectureLocation + '\'' +
+                ", lectureDays=" + lectureDays +
+                ", lectureTime=" + lectureTime +
+                ", lectureDuration=" + lectureDuration +
+                ", color=" + color +
+                '}';
+    }
 }

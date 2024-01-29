@@ -1,8 +1,6 @@
 package com.example.college_planner;
 
-import android.animation.Animator;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +17,16 @@ import com.example.college_planner.databinding.FragmentMainBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.HashSet;
+
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        SharedPreferences preferences = requireContext().getSharedPreferences("data", Context.MODE_PRIVATE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMainBinding.inflate(inflater, container, false);
         NavController navController = NavHostFragment.findNavController(MainFragment.this);
 
