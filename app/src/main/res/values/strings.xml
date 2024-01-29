@@ -9,6 +9,7 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="add_class_header">Add a new Class</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -48,4 +49,11 @@
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_class_name">Enter Class Name</string>
+    <string name="submit">Submit</string>
+    <string name="enter_teacher_name">Enter Teacher Name</string>
+    <string name="enter_class_location">Enter Class Location</string>
+    <string name="class_days">Class Days: </string>
+    <string name="not_all_vals_filled">Not all values were filled, you must fill all the values
+    in order for you to be able to submit this form</string>
 </resources>
