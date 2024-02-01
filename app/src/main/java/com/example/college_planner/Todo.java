@@ -13,17 +13,17 @@ public class Todo implements Event {
     private final String task;
     private final String description;
     private final Optional<LocalDate> date;
-    private final Optional<Pair<LocalTime, Optional<Duration>>> timeAndDuration;
+    private final Optional<Pair<LocalTime, Optional<LocalTime>>> startTimeAndEndTime;
 
-    public Todo(String task, String description, Optional<LocalDate> date, Optional<Pair<LocalTime, Optional<Duration>>> timeAndDuration) {
+    public Todo(String task, String description, Optional<LocalDate> date, Optional<Pair<LocalTime, Optional<LocalTime>>> startTimeAndEndTime) {
         this.task = task;
         this.description = description;
         this.date = date;
-        this.timeAndDuration = timeAndDuration;
+        this.startTimeAndEndTime = startTimeAndEndTime;
     }
 
     public boolean isConstant() {
-        return !date.isPresent() && !timeAndDuration.isPresent();
+        return !date.isPresent() && !startTimeAndEndTime.isPresent();
     }
 
     @Override

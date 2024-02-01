@@ -24,10 +24,12 @@ import java.util.HashSet;
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
+    private DataStore dataStore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMainBinding.inflate(inflater, container, false);
+        dataStore = new DataStore(requireActivity());
         NavController navController = NavHostFragment.findNavController(MainFragment.this);
 
         FloatingActionButton fab = (FloatingActionButton) requireActivity().findViewById(R.id.fab);

@@ -17,17 +17,17 @@ public class Class implements Event {
     private final String teacher;
     private final String lectureLocation;
     private final HashSet<DayOfWeek> lectureDays;
-    private final LocalTime lectureTime;
-    private final Duration lectureDuration;
+    private final LocalTime lectureStartTime;
+    private final LocalTime lectureEndTime;
     private final Color color;
 
-    public Class(String name, String teacher, String lectureLocation, HashSet<DayOfWeek> lectureDays, LocalTime lectureTime, Duration lectureDuration, Color color) {
+    public Class(String name, String teacher, String lectureLocation, HashSet<DayOfWeek> lectureDays, LocalTime lectureStartTime, LocalTime lectureEndTime, Color color) {
         this.name = name;
         this.teacher = teacher;
         this.lectureLocation = lectureLocation;
         this.lectureDays = lectureDays;
-        this.lectureTime = lectureTime;
-        this.lectureDuration = lectureDuration;
+        this.lectureStartTime = lectureStartTime;
+        this.lectureEndTime = lectureEndTime;
         this.color = color;
     }
 
@@ -48,9 +48,8 @@ public class Class implements Event {
     @Override
     public Optional<String> time() {
         DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
-        LocalTime lectureEnd = lectureTime.plus(lectureDuration);
         return Optional.of(
-                String.format(Locale.getDefault(), "%s - %s", timeFormat.format(lectureTime), timeFormat.format(lectureEnd))
+                String.format(Locale.getDefault(), "%s - %s", timeFormat.format(lectureStartTime), timeFormat.format(lectureEndTime))
         );
     }
 
@@ -81,8 +80,8 @@ public class Class implements Event {
                 ", teacher='" + teacher + '\'' +
                 ", lectureLocation='" + lectureLocation + '\'' +
                 ", lectureDays=" + lectureDays +
-                ", lectureTime=" + lectureTime +
-                ", lectureDuration=" + lectureDuration +
+                ", lectureTime=" + lectureStartTime +
+                ", lectureDuration=" + lectureEndTime +
                 ", color=" + color +
                 '}';
     }
