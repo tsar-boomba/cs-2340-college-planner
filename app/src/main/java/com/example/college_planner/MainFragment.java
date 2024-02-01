@@ -1,60 +1,95 @@
 package com.example.college_planner;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.college_planner.databinding.FragmentMainBinding;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.HashSet;
 
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMainBinding.inflate(inflater, container, false);
         NavController navController = NavHostFragment.findNavController(MainFragment.this);
 
-        binding.fab.setExpandedComponentIdHint(R.id.sheet);
+        FloatingActionButton fab = (FloatingActionButton) requireActivity().findViewById(R.id.fab);
+        ExtendedFloatingActionButton efab = (ExtendedFloatingActionButton) requireActivity().findViewById(R.id.submit_fab);
+        TextView actionAddClass = (TextView) requireActivity().findViewById(R.id.action_add_class);
+        TextView actionAddAssignment = (TextView) requireActivity().findViewById(R.id.action_add_assignment);
+        TextView actionAddExam = (TextView) requireActivity().findViewById(R.id.action_add_exam);
+        TextView actionAddTodo = (TextView) requireActivity().findViewById(R.id.action_add_todo);
+        TextView menuClose = (TextView) requireActivity().findViewById(R.id.menu_close);
 
-        binding.actionAddClass.setOnClickListener((view) -> {
+        showFab(fab);
+        efab.hide();
+
+        actionAddClass.setOnClickListener((view) -> {
+            hideFab(fab);
+            fab.setExpanded(false);
             navController.navigate(MainFragmentDirections.actionFirstFragmentToAddClassFragment());
         });
 
-        binding.actionAddAssignment.setOnClickListener((view) -> {
+        actionAddAssignment.setOnClickListener((view) -> {
+            fab.setExpanded(false);
+            fab.hide();
             navController.navigate(MainFragmentDirections.actionFirstFragmentToAddAssignmentFragment());
         });
 
-        binding.actionAddExam.setOnClickListener((view) -> {
+        actionAddExam.setOnClickListener((view) -> {
+            fab.setExpanded(false);
+            fab.hide();
             navController.navigate(MainFragmentDirections.actionFirstFragmentToAddExamFragment());
         });
 
-        binding.actionAddTodo.setOnClickListener((view) -> {
+        actionAddTodo.setOnClickListener((view) -> {
+            fab.setExpanded(false);
+            hideFab(fab);
             navController.navigate(MainFragmentDirections.actionFirstFragmentToAddTodoFragment());
         });
 
-
-        binding.fab.setOnClickListener((view) -> {
-            binding.sheet.setVisibility(View.VISIBLE);
+        fab.setOnClickListener((view) -> {
+            fab.setExpanded(true);
         });
 
-        binding.menuClose.setOnClickListener((view) -> {
-            binding.sheet.setVisibility(View.INVISIBLE);
+        menuClose.setOnClickListener((view) -> {
+            fab.setExpanded(false);
         });
 
         return binding.getRoot();
+    }
 
+    private void hideFab(FloatingActionButton fab) {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setBehavior(null); //should disable default animations
+        p.setAnchorId(View.NO_ID); //should let you set visibility
+        fab.setLayoutParams(p);
+        fab.setVisibility(View.GONE); // View.INVISIBLE might also be worth trying
+    }
+
+    private void showFab(FloatingActionButton fab) {
+        // to bring things back to normal state
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setBehavior(new FloatingActionButton.Behavior());
+        fab.setLayoutParams(p);
+        fab.show();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

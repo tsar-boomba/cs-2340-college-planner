@@ -3,10 +3,15 @@ package com.example.college_planner;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +54,7 @@ public class AddExamFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -58,6 +64,17 @@ public class AddExamFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        NavController navController = NavHostFragment.findNavController(this);
+        FloatingActionButton fab = (FloatingActionButton) requireActivity().findViewById(R.id.fab);
+        ExtendedFloatingActionButton efab = (ExtendedFloatingActionButton) requireActivity().findViewById(R.id.submit_fab);
+
+        efab.show();
+
+        efab.setOnClickListener((view) -> {
+            // If successful
+            navController.navigate(AddClassFragmentDirections.actionAddClassFragmentToFirstFragment());
+        });
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_exam, container, false);
     }

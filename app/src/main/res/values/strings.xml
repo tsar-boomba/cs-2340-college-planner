@@ -5,8 +5,7 @@
     <string name="action_add_exam">Add Exam</string>
     <string name="action_add_todo">Add Todo</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="main_fragment_label">Main Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="add_class_header">Add a new Class</string>
@@ -54,6 +53,5 @@
     <string name="enter_teacher_name">Enter Teacher Name</string>
     <string name="enter_class_location">Enter Class Location</string>
     <string name="class_days">Class Days: </string>
-    <string name="not_all_vals_filled">Not all values were filled, you must fill all the values
-    in order for you to be able to submit this form</string>
+    <string name="not_all_vals_filled">ALL VALUES NEED TO BE FILLED</string>
 </resources>

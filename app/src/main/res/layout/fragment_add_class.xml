@@ -22,7 +22,7 @@
             android:textAlignment="center"
             android:layout_margin="10dp"
             android:text="@string/add_class_header"
-            android:textSize="40sp" />
+            android:textSize="35sp" />
 
         <!-- ENTER CLASS NAME TEXT BOX -->
         <EditText
@@ -146,7 +146,7 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:id="@+id/SelectedTime"
+                    android:id="@+id/SelectedStartTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/startTime"
@@ -168,43 +168,99 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="20dp"
-                android:background="@color/black"
+                android:backgroundTint="#50C5B7"
                 android:text="Pick Time"
+                android:textSize="15sp"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/border"
-            android:layout_margin="10dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Class end time: "
-                android:layout_margin="5dp"
-                android:textSize="20sp"/>
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Class end time: "
+                    android:layout_margin="5dp"
+                    android:textSize="20sp"/>
 
-            <EditText
-                android:id="@+id/classEndTime"
+                <TextView
+                    android:id="@+id/SelectedEndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/startTime"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:text="Time"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/endTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="20dp"
+                android:backgroundTint="#50C5B7"
+                android:text="Pick Time"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <!-- SELECT CLASS COLOR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            tools:context=".MainActivity"
+            tools:ignore="HardcodedText">
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_gravity="center_horizontal"
-                android:inputType="time" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pick Class Color:"
+                    android:layout_margin="5dp"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/class_color"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_margin="5dp"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+            <!--Pick color Button-->
+            <Button
+                android:id="@+id/pick_color_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="Pick Color" />
+
+
         </LinearLayout>
-        <!-- SELECT CLASS COLOR -->
 
 
     </LinearLayout>
-    <Button
-        android:id="@+id/submitClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:layout_gravity="bottom|end"
-        android:layout_centerHorizontal="true" />
 
 
 
