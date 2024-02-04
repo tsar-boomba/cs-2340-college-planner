@@ -2,10 +2,11 @@ package com.example.college_planner;
 
 import android.graphics.Color;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class Assignment implements Event {
+public class Assignment implements Event, Serializable {
     private final String name;
     protected final Class _class;
     protected final String description;

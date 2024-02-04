@@ -2,6 +2,7 @@ package com.example.college_planner;
 
 import android.graphics.Color;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,7 +12,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
 
-public class Class implements Event {
+public class Class implements Event, Serializable {
     private final String name;
     private final String teacher;
     private final String lectureLocation;

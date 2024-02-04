@@ -3,13 +3,18 @@ package com.example.college_planner;
 import android.graphics.Color;
 import android.util.Pair;
 
-import java.time.Duration;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-public class Todo implements Event {
+public class Todo implements Event, Serializable {
     private final String task;
     private final String description;
     private final Optional<LocalDate> date;
