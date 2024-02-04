@@ -1,14 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AddExamFragment">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:id="@+id/addExamFragment"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context=".AddExamFragment"
+tools:ignore="ExtraText,SmallSp">
 
-    <!-- TODO: Update blank fragment layout -->
+
+<!-- TODO: Update blank fragment layout -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- TITLE OF ADD EXAM FORM -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:textAlignment="center"
+        android:layout_margin="10dp"
+        android:text="Add a new Exam"
+        android:textSize="35sp" />
 
-</FrameLayout>
+    <!-- ENTER EXAM NAME TEXT BOX -->
+    <EditText
+        android:id="@+id/exam_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:hint="Enter Exam Name"
+        android:inputType="text"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text=""
+        android:textSize="30sp"
+        tools:ignore="Autofill" />
+
+    <!-- SELECT CLASS DROPDOWN MENU
+    android:background="@drawable/border"-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/border"
+        android:padding="10dp"
+        android:layout_margin="10dp">
+
+        <Spinner
+            android:id="@+id/class_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:spinnerMode="dropdown" />
+        <!--android:backgroundTint="@color/black"
+        />-->
+    </LinearLayout>
+
+    <!-- ENTER EXAM DESCRIPTION -->
+    <EditText
+        android:id="@+id/exam_description"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:hint="Enter Exam Description"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:inputType="textMultiLine"
+        android:textSize="20sp"
+        android:layout_gravity="fill_horizontal"
+        tools:ignore="Autofill" />
+
+    <!-- ENTER EXAM LOCATION -->
+    <EditText
+        android:id="@+id/exam_loc"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:hint="Enter Exam Location"
+        android:inputType="text"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text=""
+        android:textSize="20sp"
+        tools:ignore="Autofill" />
+
+    <!-- SELECT EXAM DATE -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Input Exam Date: "
+                android:layout_margin="5dp"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/text_due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/exam_date"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Due Date"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/exam_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:backgroundTint="#50C5B7"
+            android:text="Pick Due Date"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+    <!-- EXAM START TIME -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Exam Start Time: "
+                android:layout_margin="5dp"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/text_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/start_time"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Time"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/start_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="10dp"
+            android:backgroundTint="#50C5B7"
+            android:text="Pick Time"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </LinearLayout>
+    <!-- EXAM END TIME-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Exam End Time: "
+                android:layout_margin="5dp"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/text_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/endTime"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Time"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/endTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="10dp"
+            android:backgroundTint="#50C5B7"
+            android:text="Pick Time"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

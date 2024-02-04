@@ -1,6 +1,5 @@
 package com.example.college_planner;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,21 +8,20 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class Exam extends Assignment {
-    private final Duration duration;
+    private final LocalTime endTime;
     private final String location;
 
-    public Exam(String name, Class _class, String description, LocalDateTime dueDate, Duration duration, String location) {
+    public Exam(String name, Class _class, String description, LocalDateTime dueDate, LocalTime endTime, String location) {
         super(name, _class, description, dueDate);
-        this.duration = duration;
+        this.endTime = endTime;
         this.location = location;
     }
 
     @Override
     public Optional<String> time() {
         DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
-        LocalTime examEnd = dueDate.plus(duration).toLocalTime();
         return Optional.of(
-                String.format(Locale.getDefault(), "%s - %s", timeFormat.format(dueDate.toLocalTime()), timeFormat.format(examEnd))
+                String.format(Locale.getDefault(), "%s - %s", timeFormat.format(dueDate.toLocalTime()), timeFormat.format(endTime))
         );
     }
 

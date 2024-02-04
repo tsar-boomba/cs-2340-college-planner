@@ -1,14 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddAssignmentFragment">
+    android:id="@+id/addAssignmentFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AddAssignmentFragment"
+    tools:ignore="ExtraText,SmallSp">
+
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- TITLE OF ADD ASSIGNMENT FORM -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:layout_margin="10dp"
+            android:text="Add a new Assignment"
+            android:textSize="35sp" />
+
+        <!-- ENTER ASSIGNMENT NAME TEXT BOX -->
+        <EditText
+            android:id="@+id/enterAssignName"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:hint="Enter Assignment Name"
+            android:inputType="text"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:text=""
+            android:textSize="30sp"
+            tools:ignore="Autofill" />
+
+        <!-- SELECT CLASS DROPDOWN MENU
+        android:background="@drawable/border"-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/border"
+            android:padding="10dp"
+            android:layout_margin="10dp">
+
+            <Spinner
+            android:id="@+id/class_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:spinnerMode="dropdown" />
+            <!--android:backgroundTint="@color/black"
+            />-->
+        </LinearLayout>
+
+        <!-- ENTER ASSIGNMENT DESCRIPTION -->
+        <EditText
+            android:id="@+id/assignment_description"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:hint="Enter Assignment Description"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:inputType="textMultiLine"
+            android:textSize="20sp"
+            android:layout_gravity="fill_horizontal"
+            tools:ignore="Autofill" />
+
+        <!-- SELECT ASSIGNMNET DUE DATE -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Input Assignment Due Date: "
+                    android:layout_margin="5dp"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/text_due_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/assignment_due_date"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:text="Due Date"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/assignment_due_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="20dp"
+                android:backgroundTint="#50C5B7"
+                android:text="Pick Due Date"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Assignment Due Date Time: "
+                    android:layout_margin="5dp"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/text_due_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/due_time"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:text="Time"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/due_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="20dp"
+                android:backgroundTint="#50C5B7"
+                android:text="Pick Time"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
