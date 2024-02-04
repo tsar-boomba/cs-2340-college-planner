@@ -12,6 +12,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.college_planner.databinding.FragmentMainBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -19,7 +21,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainFragment extends Fragment {
 
@@ -96,6 +101,22 @@ public class MainFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        List<Class> classes = dataStore.getClasses();
+        List<Exam> exams = dataStore.getExams();
+        List<Assignment> assignments = dataStore.getAssignments();
+        List<Todo> todos = dataStore.getTodos();
+        ArrayList<Event> events = new ArrayList<>(classes.size() + exams.size() + assignments.size() + todos.size());
+
+        events.addAll(classes);
+        events.addAll(exams);
+        events.addAll(assignments);
+        events.addAll(todos);
+
+        TodayExpandableListAdapter expandableListAdapter = new TodayExpandableListAdapter(requireActivity(), "Today", events);
+        binding.todayList.setAdapter(expandableListAdapter);
+        binding.todayList.expandGroup(0);
+
+        binding.classList.setAdapter(new ClassListAdapter(classes, dataStore.getAssignments(), dataStore.getExams()));
     }
 
     @Override

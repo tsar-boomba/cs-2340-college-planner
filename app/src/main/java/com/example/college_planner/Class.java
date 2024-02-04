@@ -3,7 +3,6 @@ package com.example.college_planner;
 import android.graphics.Color;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +32,14 @@ public class Class implements Event {
 
     public String getName() {
         return name;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override
