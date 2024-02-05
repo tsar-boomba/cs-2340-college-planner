@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Class implements Event, Serializable {
@@ -92,5 +93,18 @@ public class Class implements Event, Serializable {
                 ", lectureDuration=" + lectureEndTime +
                 ", color=" + color +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Class aClass = (Class) o;
+        return Objects.equals(name, aClass.name) && Objects.equals(teacher, aClass.teacher) && Objects.equals(lectureLocation, aClass.lectureLocation) && Objects.equals(lectureDays, aClass.lectureDays) && Objects.equals(lectureStartTime, aClass.lectureStartTime) && Objects.equals(lectureEndTime, aClass.lectureEndTime) && Objects.equals(color, aClass.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, teacher, lectureLocation, lectureDays, lectureStartTime, lectureEndTime, color);
     }
 }

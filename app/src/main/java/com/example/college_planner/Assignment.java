@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Assignment implements Event, Serializable {
@@ -52,5 +53,28 @@ public class Assignment implements Event, Serializable {
     @Override
     public Color color() {
         return _class.color();
+    }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "name='" + name + '\'' +
+                ", _class=" + _class +
+                ", description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Assignment that = (Assignment) o;
+        return Objects.equals(name, that.name) && Objects.equals(_class, that._class) && Objects.equals(description, that.description) && Objects.equals(dueDate, that.dueDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, _class, description, dueDate);
     }
 }

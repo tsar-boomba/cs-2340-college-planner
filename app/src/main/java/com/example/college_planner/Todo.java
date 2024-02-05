@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Todo implements Event, Serializable {
@@ -71,5 +72,28 @@ public class Todo implements Event, Serializable {
     @Override
     public Color color() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "task='" + task + '\'' +
+                ", description='" + description + '\'' +
+                ", date=" + date +
+                ", startTimeAndEndTime=" + startTimeAndEndTime +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Todo todo = (Todo) o;
+        return Objects.equals(task, todo.task) && Objects.equals(description, todo.description) && Objects.equals(date, todo.date) && Objects.equals(startTimeAndEndTime, todo.startTimeAndEndTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(task, description, date, startTimeAndEndTime);
     }
 }
