@@ -31,6 +31,11 @@
         <action
             android:id="@+id/action_addClassFragment_to_FirstFragment"
             app:destination="@id/MainFragment" />
+        <argument
+            android:name="editClass"
+            app:argType="com.example.college_planner.Class"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/addAssignmentFragment"
@@ -40,6 +45,11 @@
         <action
             android:id="@+id/action_addAssignmentFragment_to_FirstFragment"
             app:destination="@id/MainFragment" />
+        <argument
+            android:name="editAssignment"
+            app:argType="com.example.college_planner.Assignment"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/addExamFragment"
@@ -49,6 +59,11 @@
         <action
             android:id="@+id/action_addExamFragment_to_FirstFragment"
             app:destination="@id/MainFragment" />
+        <argument
+            android:name="editExam"
+            app:argType="com.example.college_planner.Exam"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/addTodoFragment"
@@ -58,5 +73,10 @@
         <action
             android:id="@+id/action_addTodoFragment_to_FirstFragment"
             app:destination="@id/MainFragment" />
+        <argument
+            android:name="editTodo"
+            app:argType="com.example.college_planner.Todo"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

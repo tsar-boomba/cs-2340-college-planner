@@ -3,13 +3,19 @@ package com.example.college_planner;
 import android.graphics.Color;
 import android.util.Pair;
 
-import java.time.Duration;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.Optional;
 
-public class Todo implements Event {
+public class Todo implements Event, Serializable {
     private final String task;
     private final String description;
     private final Optional<LocalDate> date;
@@ -66,5 +72,28 @@ public class Todo implements Event {
     @Override
     public Color color() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "task='" + task + '\'' +
+                ", description='" + description + '\'' +
+                ", date=" + date +
+                ", startTimeAndEndTime=" + startTimeAndEndTime +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Todo todo = (Todo) o;
+        return Objects.equals(task, todo.task) && Objects.equals(description, todo.description) && Objects.equals(date, todo.date) && Objects.equals(startTimeAndEndTime, todo.startTimeAndEndTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(task, description, date, startTimeAndEndTime);
     }
 }

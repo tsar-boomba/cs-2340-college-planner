@@ -2,17 +2,18 @@ package com.example.college_planner;
 
 import android.graphics.Color;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
-public class Class implements Event {
+public class Class implements Event, Serializable {
     private final String name;
     private final String teacher;
     private final String lectureLocation;
@@ -33,6 +34,14 @@ public class Class implements Event {
 
     public String getName() {
         return name;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override
@@ -84,5 +93,18 @@ public class Class implements Event {
                 ", lectureDuration=" + lectureEndTime +
                 ", color=" + color +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Class aClass = (Class) o;
+        return Objects.equals(name, aClass.name) && Objects.equals(teacher, aClass.teacher) && Objects.equals(lectureLocation, aClass.lectureLocation) && Objects.equals(lectureDays, aClass.lectureDays) && Objects.equals(lectureStartTime, aClass.lectureStartTime) && Objects.equals(lectureEndTime, aClass.lectureEndTime) && Objects.equals(color, aClass.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, teacher, lectureLocation, lectureDays, lectureStartTime, lectureEndTime, color);
     }
 }
