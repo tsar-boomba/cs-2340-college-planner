@@ -1,5 +1,7 @@
 package com.example.college_planner;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -7,18 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import java.util.HashMap;
+
 import java.util.List;
 
 public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
-    private Context context;
-    private String expandableTitleList;
-    private List<Event> expandableDetailList;
+    private final DataStore dataStore;
+    private final Context context;
+    private final String expandableTitleList;
+    private final List<Event> expandableDetailList;
 
     // constructor
-    public TodayExpandableListAdapter(Context context, String expandableListTitle,
-                                      List<Event> expandableListDetail) {
+    public TodayExpandableListAdapter(Context context, DataStore dataStore, String expandableListTitle, List<Event> expandableListDetail) {
         this.context = context;
+        this.dataStore = dataStore;
         this.expandableTitleList = expandableListTitle;
         this.expandableDetailList = expandableListDetail;
     }
@@ -38,8 +41,7 @@ public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     // Gets a View that displays the data for the given child within the given group.
-    public View getChildView(int lstPosn, final int expanded_ListPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int lstPosn, final int expanded_ListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final Event event = (Event) getChild(lstPosn, expanded_ListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,7 +56,45 @@ public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
         time.setText(event.time().orElse(""));
 
         convertView.findViewById(R.id.today_item_delete).setOnClickListener((_view) -> {
-            // TODO: delete this event
+            Activity activity = (Activity) context;
+            if (event.getClass() == Class.class) {
+                Class _class = (Class) event;
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                TextView text = new TextView(activity);
+                text.setText("Deleting a class will delete all associated assignments and exams! Are you sure you want to do this?");
+                text.setPadding(16, 16, 16, 16);
+                builder.setTitle("Delete " + _class.getName() + " ?").setView(text).setPositiveButton("Delete", (dialog, which) -> {
+                    List<Class> classes = dataStore.getClasses();
+                    classes.remove(_class);
+                    List<Exam> exams = dataStore.getExams();
+                    List<Assignment> assignments = dataStore.getAssignments();
+                    exams.removeIf((exam) -> exam._class.equals(_class));
+                    assignments.removeIf((assignment -> assignment._class.equals(_class)));
+                    dataStore.setClasses(classes);
+                    dataStore.setAssignments(assignments);
+                    dataStore.setExams(exams);
+                    activity.recreate();
+                }).setNegativeButton("Keep", (dialog, which) -> {
+                }).create().show();
+            } else if (event.getClass() == Assignment.class) {
+                Assignment assignment = (Assignment) event;
+                List<Assignment> assignments = dataStore.getAssignments();
+                assignments.remove(assignment);
+                dataStore.setAssignments(assignments);
+                activity.recreate();
+            } else if (event.getClass() == Exam.class) {
+                Exam exam = (Exam) event;
+                List<Exam> exams = dataStore.getExams();
+                exams.remove(exam);
+                dataStore.setExams(exams);
+                activity.recreate();
+            } else if (event.getClass() == Todo.class) {
+                Todo todo = (Todo) event;
+                List<Todo> todos = dataStore.getTodos();
+                todos.remove(todo);
+                dataStore.setTodos(todos);
+                activity.recreate();
+            }
         });
 
         convertView.findViewById(R.id.today_item_edit).setOnClickListener((_view) -> {
@@ -95,8 +135,7 @@ public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         // TODO: Scroll only the expanded out list, not the whole thing
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this.context.
-                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
         TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);
