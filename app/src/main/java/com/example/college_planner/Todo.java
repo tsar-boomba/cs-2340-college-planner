@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,6 +30,22 @@ public class Todo implements Event, Serializable {
         this.startTimeAndEndTime = startTimeAndEndTime;
     }
 
+    public String getTask() {
+        return task;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Optional<LocalDate> getDate() {
+        return date;
+    }
+
+    public Optional<Pair<LocalTime, Optional<LocalTime>>> getStartTimeAndEndTime() {
+        return startTimeAndEndTime;
+    }
+
     public boolean isConstant() {
         return !date.isPresent() && !startTimeAndEndTime.isPresent();
     }
@@ -36,7 +54,7 @@ public class Todo implements Event, Serializable {
     public boolean shouldRender(LocalDateTime date) {
         if (isConstant()) {
             // Neither date nor timeAndDuration is set, will render separately
-            return false;
+            return true;
         }
 
         // If date is present, we just use it to decide what day to render on
@@ -51,7 +69,23 @@ public class Todo implements Event, Serializable {
 
     @Override
     public Optional<String> time() {
-        return Optional.empty();
+        if (isConstant()) {
+            return Optional.empty();
+        }
+
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
+
+        if (date.isPresent() && !startTimeAndEndTime.isPresent()) {
+            return Optional.empty();
+        } else {
+            Pair<LocalTime, Optional<LocalTime>> pair = startTimeAndEndTime.get();
+
+            if (!pair.second.isPresent()) {
+                return Optional.of(pair.first.format(formatter));
+            } else {
+                return Optional.of(String.format("%s - %s", pair.first.format(formatter), pair.second.get().format(formatter)));
+            }
+        }
     }
 
     @Override
@@ -61,17 +95,17 @@ public class Todo implements Event, Serializable {
 
     @Override
     public String shortDescription() {
-        return null;
+        return description;
     }
 
     @Override
     public String longDescription() {
-        return null;
+        return description;
     }
 
     @Override
     public Color color() {
-        return null;
+        return Color.valueOf(122, 122, 122);
     }
 
     @Override

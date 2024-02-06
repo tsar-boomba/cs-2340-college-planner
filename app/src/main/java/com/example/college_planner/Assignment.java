@@ -4,12 +4,13 @@ import android.graphics.Color;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Objects;
 import java.util.Optional;
 
 public class Assignment implements Event, Serializable {
     private final String name;
-    protected final Class _class;
+    protected Class _class;
     protected final String description;
     protected final LocalDateTime dueDate;
 
@@ -18,6 +19,22 @@ public class Assignment implements Event, Serializable {
         this._class = _class;
         this.description = description;
         this.dueDate = dueDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Class get_class() {
+        return _class;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
     }
 
     @Override
@@ -32,7 +49,7 @@ public class Assignment implements Event, Serializable {
 
     @Override
     public Optional<String> time() {
-        return Optional.empty();
+        return Optional.of(dueDate.format(new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd hh:mm a").toFormatter()));
     }
 
     @Override
@@ -53,6 +70,11 @@ public class Assignment implements Event, Serializable {
     @Override
     public Color color() {
         return _class.color();
+    }
+
+    @Override
+    public Optional<LocalDateTime> startTime() {
+        return Optional.ofNullable(dueDate);
     }
 
     @Override

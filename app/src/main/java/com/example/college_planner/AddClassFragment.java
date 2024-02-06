@@ -3,29 +3,24 @@ package com.example.college_planner;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
-
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.graphics.Color;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.college_planner.databinding.FragmentAddClassBinding;
-import com.example.college_planner.databinding.FragmentMainBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -39,15 +34,8 @@ import yuku.ambilwarna.AmbilWarnaDialog;
  */
 public class AddClassFragment extends Fragment {
     private FragmentAddClassBinding binding;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private MainActivity activity;
+    private Class defaultClass;
     private LocalTime startTime;
     private LocalTime endTime;
     private int mDefaultColor = 0;
@@ -61,45 +49,56 @@ public class AddClassFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AddClassFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddClassFragment newInstance(String param1, String param2) {
+    public static AddClassFragment newInstance() {
         AddClassFragment fragment = new AddClassFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        activity = (MainActivity) requireActivity();
+        currentClasses = activity.getDataStore().getClasses();
+        if (savedInstanceState == null) {
+            int defaultClassIdx = AddClassFragmentArgs.fromBundle(getArguments()).getIndex();
+            if (defaultClassIdx != -1)
+                defaultClass = activity.getDataStore().getClasses().get(defaultClassIdx);
         }
-
-
-
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAddClassBinding.inflate(inflater, container, false);
         ExtendedFloatingActionButton efab = (ExtendedFloatingActionButton) requireActivity().findViewById(R.id.submit_fab);
         efab.show();
+
+        if (defaultClass != null) {
+            binding.enterClassName.setText(defaultClass.getName());
+            binding.enterTeacherName.setText(defaultClass.getTeacher());
+            binding.enterClassLocation.setText(defaultClass.getLectureLocation());
+            binding.Monday.setChecked(defaultClass.getLectureDays().contains(DayOfWeek.MONDAY));
+            binding.Tuesday.setChecked(defaultClass.getLectureDays().contains(DayOfWeek.TUESDAY));
+            binding.Wendesday.setChecked(defaultClass.getLectureDays().contains(DayOfWeek.WEDNESDAY));
+            binding.Thursday.setChecked(defaultClass.getLectureDays().contains(DayOfWeek.THURSDAY));
+            binding.Friday.setChecked(defaultClass.getLectureDays().contains(DayOfWeek.FRIDAY));
+            startTime = defaultClass.getLectureStartTime();
+            mDefaultColor = defaultClass.getColor().toArgb();
+            binding.pickColorButton.setBackgroundColor(mDefaultColor);
+            endTime = defaultClass.getLectureEndTime();
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
+
+            binding.SelectedStartTime.setText(startTime.format(formatter));
+            binding.SelectedEndTime.setText(endTime.format(formatter));
+        }
 
         efab.setOnClickListener(view -> {
             //check if all fields are filled
@@ -130,7 +129,7 @@ public class AddClassFragment extends Fragment {
                 daysOfWeek.add(DayOfWeek.FRIDAY);
             }
 
-            String classStarts = binding.SelectedEndTime.getText().toString();
+            String classStarts = binding.SelectedStartTime.getText().toString();
             String classEnds = binding.SelectedEndTime.getText().toString();
 
             boolean isEmpty = checkAllVals(className, classLoc, teachName, daysOfWeek, classStarts, classEnds, mDefaultColor);
@@ -140,17 +139,24 @@ public class AddClassFragment extends Fragment {
                 return;
             }
 
-            DataStore ds = new DataStore(requireContext());
-
-            if (currentClasses == null) {
-                currentClasses = ds.getClasses();
-            }
             if (isDupeClass(className)) {
                 Snackbar.make(binding.addClassFragment, ">:( YOU CAN'T ADD A DUPLICATE CLASS >:(", BaseTransientBottomBar.LENGTH_SHORT).show();
                 return;
             }
 
-            ds.addClass(new Class(className, teachName, classLoc, daysOfWeek, startTime, endTime, Color.valueOf(mDefaultColor)));
+            Class newClass = new Class(className, teachName, classLoc, daysOfWeek, startTime, endTime, Color.valueOf(mDefaultColor));
+
+            if (defaultClass != null) {
+                // Edited
+                currentClasses.set(currentClasses.indexOf(defaultClass), newClass);
+                List<Exam> exams = activity.getDataStore().getExams();
+                List<Assignment> assignments = activity.getDataStore().getAssignments();
+                exams.stream().filter((exam) -> exam._class.equals(defaultClass)).forEach(((exam) -> exam._class = newClass));
+                assignments.stream().filter((assign) -> assign._class.equals(defaultClass)).forEach(((assign) -> assign._class = newClass));
+            } else {
+                currentClasses.add(newClass);
+            }
+
             NavHostFragment.findNavController(AddClassFragment.this).navigate(AddClassFragmentDirections.actionAddClassFragmentToFirstFragment());
         });
 
@@ -160,12 +166,11 @@ public class AddClassFragment extends Fragment {
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
-                    (view, hourOfDay, minute1) -> {
-                        DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
-                        binding.SelectedStartTime.setText(LocalTime.of(hourOfDay, minute1).format(timeFormat));
-                        startTime = LocalTime.of(hourOfDay, minute1);
-                    }, hour, minute, false);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (view, hourOfDay, minute1) -> {
+                DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
+                binding.SelectedStartTime.setText(LocalTime.of(hourOfDay, minute1).format(timeFormat));
+                startTime = LocalTime.of(hourOfDay, minute1);
+            }, hour, minute, false);
             timePickerDialog.show();
         });
 
@@ -175,24 +180,22 @@ public class AddClassFragment extends Fragment {
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
-                    (view, hourOfDay, minute1) -> {
-                        DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
-                        binding.SelectedEndTime.setText(LocalTime.of(hourOfDay, minute1).format(timeFormat));
+            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (view, hourOfDay, minute1) -> {
+                DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
+                binding.SelectedEndTime.setText(LocalTime.of(hourOfDay, minute1).format(timeFormat));
 
-                        endTime = LocalTime.of(hourOfDay, minute1);
+                endTime = LocalTime.of(hourOfDay, minute1);
 
-                    }, hour, minute, false);
+            }, hour, minute, false);
             timePickerDialog.show();
         });
 
-        binding.pickColorButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        openColorPickerDialogue();
-                    }
-                });
+        binding.pickColorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openColorPickerDialogue();
+            }
+        });
 
         return binding.getRoot();
     }
@@ -203,23 +206,28 @@ public class AddClassFragment extends Fragment {
 
     public void openColorPickerDialogue() {
 
-        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), mDefaultColor,
-                new AmbilWarnaDialog.OnAmbilWarnaListener() {
-                    @Override
-                    public void onCancel(AmbilWarnaDialog dialog) {
-                    }
-                    @Override
-                    public void onOk(AmbilWarnaDialog dialog, int color) {
-                        mDefaultColor = color;
+        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), mDefaultColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+            }
 
-                        binding.pickColorButton.setBackgroundColor(mDefaultColor);
-                    }
-                });
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                mDefaultColor = color;
+
+                binding.pickColorButton.setBackgroundColor(mDefaultColor);
+            }
+        });
         colorPickerDialogue.show();
     }
 
     public boolean isDupeClass(String className) {
         for (int i = 0; i < currentClasses.size(); i++) {
+            if (defaultClass != null && className.equals(defaultClass.getName())) {
+                // If we are editing and the input matches the existing class, we chill
+                return false;
+            }
+
             if (currentClasses.get(i).getName().equals(className)) {
                 return true;
             }

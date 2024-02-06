@@ -18,11 +18,19 @@ public class Exam extends Assignment {
         this.location = location;
     }
 
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     @Override
     public Optional<String> time() {
         DateTimeFormatter timeFormat = new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter();
         return Optional.of(
-                String.format(Locale.getDefault(), "%s - %s", timeFormat.format(dueDate.toLocalTime()), timeFormat.format(endTime))
+                String.format(Locale.getDefault(), "%s - %s", dueDate.format(new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd hh:mm a").toFormatter()), timeFormat.format(endTime))
         );
     }
 

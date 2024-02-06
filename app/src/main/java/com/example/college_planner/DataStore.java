@@ -4,87 +4,83 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class DataStore {
-    Gson gson;
-    SharedPreferences sharedPreferences;
+    private List<Class> classes;
+    private List<Exam> exams;
+    private List<Assignment> assignments;
+    private List<Todo> todos;
 
-    public DataStore(Context context) {
-        sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-        gson = new Gson();
+    public DataStore() {
+        classes = new ArrayList<>();
+        exams = new ArrayList<>();
+        assignments = new ArrayList<>();
+        todos = new ArrayList<>();
     }
 
     public void clear() {
-        sharedPreferences.edit().clear().apply();
+        classes.clear();
+        exams.clear();
+        assignments.clear();
+        todos.clear();
     }
 
     public void addClass(Class _class) {
-        add("classes", _class);
+        classes.add(_class);
     }
 
     public List<Class> getClasses() {
-        return get("classes", Class.class);
+        return classes;
     }
 
     public void setClasses(List<Class> classes) {
-        set("classes", classes);
+        this.classes = classes;
     }
 
     public void addAssignment(Assignment assignment) {
-        add("assignments", assignment);
+        assignments.add(assignment);
     }
 
     public List<Assignment> getAssignments() {
-        return get("assignments", Assignment.class);
+        return assignments;
     }
 
     public void setAssignments(List<Assignment> assignments) {
-        set("assignments", assignments);
+        this.assignments = assignments;
     }
 
     public void addExam(Exam exam) {
-        add("exams", exam);
+        exams.add(exam);
     }
 
     public List<Exam> getExams() {
-        return get("exams", Exam.class);
+        return exams;
     }
 
     public void setExams(List<Exam> exams) {
-        set("exams", exams);
+        this.exams = exams;
     }
 
     public void addTodo(Todo todo) {
-        add("todos", todo);
+        todos.add(todo);
     }
 
     public List<Todo> getTodos() {
-        return get("todos", Todo.class);
+        return todos;
     }
 
     public void setTodos(List<Todo> todos) {
-        set("todos", todos);
-    }
-
-    private <T> void add(String key, T o) {
-        List<T> current = get(key, (java.lang.Class<T>) o.getClass());
-        current.add(o);
-        set(key, current);
-    }
-
-    private <T> void set(String key, List<T> objects) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, gson.toJson(objects.toArray((T[]) new Object[0]))).apply();
-    }
-
-    private <T> List<T> get(String key, java.lang.Class<T> classOfT) {
-        String serialized = sharedPreferences.getString(key, "[]");
-        T[] objects = (T[]) gson.fromJson(serialized, Array.newInstance(classOfT, 0).getClass());
-        return new ArrayList<>(Arrays.asList(objects));
+        this.todos = todos;
     }
 }

@@ -1,10 +1,12 @@
 package com.example.college_planner;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.navigation.NavController;
@@ -15,6 +17,9 @@ import com.example.college_planner.databinding.ClassDialogBinding;
 import com.example.college_planner.databinding.ClassDialogItemBinding;
 import com.example.college_planner.databinding.ClassListViewBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,17 +62,18 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ClassListViewBinding binding;
-        private final Activity activity;
+        private final MainActivity activity;
         private final List<Class> classes;
         private final List<Assignment> assignments;
         private final List<Exam> exams;
         private final DataStore dataStore;
+        private AlertDialog dialog;
 
         public ViewHolder(DataStore dataStore, ClassListViewBinding binding, List<Class> classes, List<Assignment> assignments, List<Exam> exams) {
             super(binding.getRoot());
             this.dataStore = dataStore;
             this.binding = binding;
-            this.activity = (Activity) binding.getRoot().getContext();
+            this.activity = (MainActivity) binding.getRoot().getContext();
             this.classes = classes;
             this.assignments = assignments;
             this.exams = exams;
@@ -83,45 +89,75 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                 ClassDialogBinding classDialogBinding = ClassDialogBinding.inflate(inflater);
                 NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
 
-                // Go through exams for this class
-                for (Exam exam : exams.stream().filter((exam -> exam._class.equals(_class))).collect(Collectors.toList())) {
-                    ClassDialogItemBinding classDialogItemBinding = ClassDialogItemBinding.bind(classDialogBinding.getRoot());
-                    classDialogItemBinding.dialogItemText.setText(exam.title());
-                    classDialogItemBinding.dialogItemTime.setText(exam.time().orElse(""));
+                classDialogBinding.classDialogSortSpinner.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, Arrays.asList("None", "Soonest", "Latest")));
 
-                    classDialogItemBinding.dialogClassDelete.setOnClickListener((_view) -> {
-                        exams.remove(exam);
-                        dataStore.setExams(exams);
-                        activity.recreate();
-                    });
+                List<Assignment> filteredAssignments = new ArrayList<>(exams.size() + assignments.size());
+                filteredAssignments.addAll(exams);
+                filteredAssignments.addAll(assignments);
+                filteredAssignments.removeIf((assign) -> !assign._class.equals(_class));
 
-                    classDialogItemBinding.dialogClassEdit.setOnClickListener((_view) -> {
-                        // TODO: edit exam
-                    });
+                classDialogBinding.classDialogSortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        // Remove all but spinner
+                        classDialogBinding.getRoot().removeViews(1, classDialogBinding.getRoot().getChildCount() - 1);
+                        assignments.sort((a, b) -> {
+                            String selectedSort = (String) classDialogBinding.classDialogSortSpinner.getSelectedItem();
+                            if (selectedSort.isEmpty() || selectedSort.equals("None")) {
+                                // Do nothing
+                                return 0;
+                            } else if (selectedSort.equals("Soonest")) {
+                                return a.getDueDate().compareTo(b.getDueDate());
+                            } else {
+                                return b.getDueDate().compareTo(a.getDueDate());
+                            }
+                        });
 
-                    classDialogBinding.getRoot().addView(classDialogItemBinding.getRoot());
-                }
+                        // Go through assignments for this class
+                        for (Assignment assignment : filteredAssignments) {
+                            ClassDialogItemBinding classDialogItemBinding = ClassDialogItemBinding.inflate(inflater, classDialogBinding.getRoot(), false);
+                            classDialogItemBinding.dialogItemText.setText(assignment.title());
+                            classDialogItemBinding.dialogItemTime.setText(assignment.time().orElse(""));
 
-                // Go through assignments for this class
-                for (Assignment assignment : assignments.stream().filter((assignment -> assignment._class.equals(_class))).collect(Collectors.toList())) {
-                    ClassDialogItemBinding classDialogItemBinding = ClassDialogItemBinding.bind(classDialogBinding.getRoot());
-                    classDialogItemBinding.dialogItemText.setText(assignment.title());
-                    classDialogItemBinding.dialogItemTime.setText(assignment.time().orElse(""));
+                            classDialogItemBinding.dialogClassDelete.setOnClickListener((_view) -> {
+                                if (assignment.getClass() == Exam.class) {
+                                    Exam exam = (Exam) assignment;
+                                    exams.remove(exam);
+                                    dataStore.setExams(exams);
+                                } else {
+                                    assignments.remove(assignment);
+                                    dataStore.setAssignments(assignments);
+                                }
+                                activity.recreate();
+                            });
 
-                    classDialogItemBinding.dialogClassDelete.setOnClickListener((_view) -> {
-                        assignments.remove(assignment);
-                        dataStore.setAssignments(assignments);
-                        activity.recreate();
-                    });
+                            classDialogItemBinding.dialogClassEdit.setOnClickListener((_view) -> {
+                                if (assignment.getClass() == Exam.class) {
+                                    Exam exam = (Exam) assignment;
+                                    MainFragmentDirections.ActionFirstFragmentToAddExamFragment action = MainFragmentDirections.actionFirstFragmentToAddExamFragment();
+                                    action.setIndex(exams.indexOf(exam));
+                                    dialog.dismiss();
+                                    navController.navigate(action);
+                                } else {
+                                    MainFragmentDirections.ActionFirstFragmentToAddAssignmentFragment action = MainFragmentDirections.actionFirstFragmentToAddAssignmentFragment();
+                                    action.setIndex(activity.getDataStore().getAssignments().indexOf(assignment));
+                                    dialog.dismiss();
+                                    navController.navigate(action);
+                                }
+                            });
 
-                    classDialogItemBinding.dialogClassEdit.setOnClickListener((_view) -> {
-                        // TODO: edit assignment
-                    });
+                            classDialogBinding.getRoot().addView(classDialogItemBinding.getRoot());
+                        }
+                    }
 
-                    classDialogBinding.getRoot().addView(classDialogItemBinding.getRoot());
-                }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                AlertDialog dialog = builder.setTitle(_class.getName() + " Assignments").setView(classDialogBinding.getRoot()).setNeutralButton("Delete", (dialog1, which) -> {
+                    }
+                });
+
+                classDialogBinding.classDialogSortSpinner.setSelection(0);
+                dialog = builder.setTitle(_class.getName() + " Assignments").setView(classDialogBinding.getRoot()).setNeutralButton("Delete", (dialog1, which) -> {
                     classes.remove(_class);
                     exams.removeIf((exam) -> exam._class.equals(_class));
                     assignments.removeIf((assignment) -> assignment._class.equals(_class));
@@ -130,8 +166,13 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                     dataStore.setAssignments(assignments);
                     activity.recreate();
                 }).setNegativeButton("Edit", (dialog1, which) -> {
-                    // TODO: Edit class
+                    MainFragmentDirections.ActionFirstFragmentToAddClassFragment action = MainFragmentDirections.actionFirstFragmentToAddClassFragment();
+                    action.setIndex(activity.getDataStore().getClasses().indexOf(_class));
+                    dialog1.dismiss();
+                    navController.navigate(action);
                 }).setPositiveButton("Close", (dialog1, which) -> {
+                }).setOnDismissListener((dialog1) -> {
+                    dialog = null;
                 }).create();
                 dialog.show();
             });

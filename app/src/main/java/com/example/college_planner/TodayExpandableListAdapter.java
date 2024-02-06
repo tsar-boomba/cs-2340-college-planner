@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import java.util.List;
 
 public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
@@ -70,9 +73,6 @@ public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
                     List<Assignment> assignments = dataStore.getAssignments();
                     exams.removeIf((exam) -> exam._class.equals(_class));
                     assignments.removeIf((assignment -> assignment._class.equals(_class)));
-                    dataStore.setClasses(classes);
-                    dataStore.setAssignments(assignments);
-                    dataStore.setExams(exams);
                     activity.recreate();
                 }).setNegativeButton("Keep", (dialog, which) -> {
                 }).create().show();
@@ -80,25 +80,45 @@ public class TodayExpandableListAdapter extends BaseExpandableListAdapter {
                 Assignment assignment = (Assignment) event;
                 List<Assignment> assignments = dataStore.getAssignments();
                 assignments.remove(assignment);
-                dataStore.setAssignments(assignments);
                 activity.recreate();
             } else if (event.getClass() == Exam.class) {
                 Exam exam = (Exam) event;
                 List<Exam> exams = dataStore.getExams();
                 exams.remove(exam);
-                dataStore.setExams(exams);
                 activity.recreate();
             } else if (event.getClass() == Todo.class) {
                 Todo todo = (Todo) event;
                 List<Todo> todos = dataStore.getTodos();
                 todos.remove(todo);
-                dataStore.setTodos(todos);
                 activity.recreate();
             }
         });
 
         convertView.findViewById(R.id.today_item_edit).setOnClickListener((_view) -> {
-            // TODO: edit this event
+            MainActivity activity = (MainActivity) context;
+            NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);;
+
+            if (event.getClass() == Class.class) {
+                Class _class = (Class) event;
+                MainFragmentDirections.ActionFirstFragmentToAddClassFragment action = MainFragmentDirections.actionFirstFragmentToAddClassFragment();
+                action.setIndex(activity.getDataStore().getClasses().indexOf(_class));
+                navController.navigate(action);
+            } else if (event.getClass() == Assignment.class) {
+                Assignment assignment = (Assignment) event;
+                MainFragmentDirections.ActionFirstFragmentToAddAssignmentFragment action = MainFragmentDirections.actionFirstFragmentToAddAssignmentFragment();
+                action.setIndex(activity.getDataStore().getAssignments().indexOf(assignment));
+                navController.navigate(action);
+            } else if (event.getClass() == Exam.class) {
+                Exam exam = (Exam) event;
+                MainFragmentDirections.ActionFirstFragmentToAddExamFragment action = MainFragmentDirections.actionFirstFragmentToAddExamFragment();
+                action.setIndex(activity.getDataStore().getExams().indexOf(exam));
+                navController.navigate(action);
+            } else if (event.getClass() == Todo.class) {
+                Todo todo = (Todo) event;
+                MainFragmentDirections.ActionFirstFragmentToAddTodoFragment action = MainFragmentDirections.actionFirstFragmentToAddTodoFragment();
+                action.setIndex(activity.getDataStore().getTodos().indexOf(todo));
+                navController.navigate(action);
+            }
         });
 
         return convertView;

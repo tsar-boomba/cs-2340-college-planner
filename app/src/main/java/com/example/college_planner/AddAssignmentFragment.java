@@ -3,16 +3,15 @@ package com.example.college_planner;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
+
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.college_planner.databinding.FragmentAddAssignmentBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -36,19 +34,13 @@ import java.util.List;
 public class AddAssignmentFragment extends Fragment {
 
     private FragmentAddAssignmentBinding binding;
+    private MainActivity activity;
+    private Assignment defaultAssignment;
     private Spinner classSelected;
     private Class assignedClass = null;
     private LocalDate dueDate = null;
     private LocalTime dueTime = null;
     private List<Class> classArr;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public AddAssignmentFragment() {
         // Required empty public constructor
@@ -58,27 +50,23 @@ public class AddAssignmentFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AddAssignmentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddAssignmentFragment newInstance(String param1, String param2) {
+    public static AddAssignmentFragment newInstance() {
         AddAssignmentFragment fragment = new AddAssignmentFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = (MainActivity) requireActivity();
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        if (savedInstanceState == null) {
+            int defaultAssignmentIdx = AddAssignmentFragmentArgs.fromBundle(getArguments()).getIndex();
+            if (defaultAssignmentIdx != -1)
+                defaultAssignment = activity.getDataStore().getAssignments().get(defaultAssignmentIdx);
         }
     }
 
@@ -89,6 +77,16 @@ public class AddAssignmentFragment extends Fragment {
         ExtendedFloatingActionButton efab = (ExtendedFloatingActionButton) requireActivity().findViewById(R.id.submit_fab);
         efab.show();
         createDropdown();
+
+        if (defaultAssignment != null) {
+            binding.enterAssignName.setText(defaultAssignment.getName());
+            binding.classDropdown.setSelection(activity.getDataStore().getClasses().indexOf(defaultAssignment._class) + 1);
+            binding.assignmentDescription.setText(defaultAssignment.getDescription());
+            dueDate = defaultAssignment.getDueDate().toLocalDate();
+            dueTime = defaultAssignment.getDueDate().toLocalTime();
+            binding.textDueDate.setText(dueDate.getDayOfMonth() + "-" + (dueDate.getMonthValue() + 1) + "-" + dueDate.getYear());
+            binding.textDueTime.setText(dueTime.format(new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter()));
+        }
 
         efab.setOnClickListener((view) -> {
             String assignmentName = binding.enterAssignName.getText().toString();
@@ -101,8 +99,15 @@ public class AddAssignmentFragment extends Fragment {
                 return;
             }
 
-            DataStore ds = new DataStore(requireContext());
-            ds.addAssignment(new Assignment(assignmentName, assignedClass, assignDesc, officalDueDate));
+            Assignment newAssignment = new Assignment(assignmentName, assignedClass, assignDesc, officalDueDate);
+            List<Assignment> assignments = activity.getDataStore().getAssignments();
+
+            if (defaultAssignment != null) {
+                // Edited
+                assignments.set(assignments.indexOf(defaultAssignment), newAssignment);
+            } else {
+                assignments.add(newAssignment);
+            }
 
             NavHostFragment.findNavController(this).navigate(AddAssignmentFragmentDirections.actionAddAssignmentFragmentToFirstFragment());
         });
@@ -120,13 +125,13 @@ public class AddAssignmentFragment extends Fragment {
 
             // on below line we are creating a variable for date picker dialog.
             DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            binding.textDueDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            dueDate = LocalDate.of(year, monthOfYear, dayOfMonth);
-                            System.out.println(dueDate.toString());
-                        }
-                    }, year, month, day);
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    binding.textDueDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                    dueDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth);
+                    System.out.println(dueDate.toString());
+                }
+            }, year, month, day);
             datePickerDialog.show();
         });
 
@@ -154,17 +159,17 @@ public class AddAssignmentFragment extends Fragment {
 
     public void createDropdown() {
         classSelected = (Spinner) binding.classDropdown;
-        DataStore ds = new DataStore(requireContext());
-        String[] classes = getNames(ds);
+        String[] classes = getNames(((MainActivity) requireActivity()).getDataStore());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, classes);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         classSelected.setAdapter(adapter);
+        classSelected.setPrompt("Select Class for Assignment");
     }
 
     public String[] getNames(DataStore ds) {
         classArr = ds.getClasses();
         String[] arr = new String[classArr.size() + 1];
-        arr[0] = "Select Class for Assignment";
+        arr[0] = "Pick a class for this assignment.";
         for (int i = 1; i < arr.length; i++) {
             arr[i] = classArr.get(i - 1).getName();
         }
@@ -174,7 +179,7 @@ public class AddAssignmentFragment extends Fragment {
 
     public Class findClass(int index) {
         System.out.println("this is item position: " + index);
-        if (index != 0) {
+        if (index > 0) {
             return classArr.get(index - 1);
         } else {
             return null;

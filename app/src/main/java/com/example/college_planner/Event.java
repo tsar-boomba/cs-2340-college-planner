@@ -26,6 +26,10 @@ public interface Event {
      */
     Optional<String> time();
 
+    default Optional<LocalDateTime> startTime() {
+        return Optional.empty();
+    };
+
     /**
      * The icon which should be shown with this event
      * TODO: figure out what the best representation of an icon is (may not be string)

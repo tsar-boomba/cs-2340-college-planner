@@ -44,6 +44,22 @@ public class Class implements Event, Serializable {
         return color;
     }
 
+    public String getLectureLocation() {
+        return lectureLocation;
+    }
+
+    public HashSet<DayOfWeek> getLectureDays() {
+        return lectureDays;
+    }
+
+    public LocalTime getLectureStartTime() {
+        return lectureStartTime;
+    }
+
+    public LocalTime getLectureEndTime() {
+        return lectureEndTime;
+    }
+
     @Override
     public boolean shouldRender(LocalDateTime date) {
         return lectureDays.contains(date.getDayOfWeek());

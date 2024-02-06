@@ -3,11 +3,6 @@ package com.example.college_planner;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 
-import com.example.college_planner.databinding.FragmentAddAssignmentBinding;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.college_planner.databinding.FragmentAddExamBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,21 +33,14 @@ import java.util.List;
  */
 public class AddExamFragment extends Fragment {
     private FragmentAddExamBinding binding;
+    private MainActivity activity;
+    private Exam defaultExam;
     private Spinner classSelected;
     private Class assignedClass = null;
     private LocalDate dueDate = null;
     private LocalTime dueTime = null;
     private LocalTime endTime = null;
     private List<Class> classArr;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public AddExamFragment() {
         // Required empty public constructor
@@ -62,27 +50,23 @@ public class AddExamFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AddExamFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddExamFragment newInstance(String param1, String param2) {
+    public static AddExamFragment newInstance() {
         AddExamFragment fragment = new AddExamFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = (MainActivity) requireActivity();
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        if (savedInstanceState == null) {
+            int defaultExamIdx = AddExamFragmentArgs.fromBundle(getArguments()).getIndex();
+            if (defaultExamIdx != -1)
+                defaultExam = activity.getDataStore().getExams().get(defaultExamIdx);
         }
     }
 
@@ -93,6 +77,19 @@ public class AddExamFragment extends Fragment {
         ExtendedFloatingActionButton efab = (ExtendedFloatingActionButton) requireActivity().findViewById(R.id.submit_fab);
         efab.show();
         createDropdown();
+
+        if (defaultExam != null) {
+            binding.examName.setText(defaultExam.getName());
+            binding.classDropdown.setSelection(activity.getDataStore().getClasses().indexOf(defaultExam._class) + 1);
+            binding.examLoc.setText(defaultExam.getLocation());
+            binding.examDescription.setText(defaultExam.getDescription());
+            dueDate = defaultExam.getDueDate().toLocalDate();
+            dueTime = defaultExam.getDueDate().toLocalTime();
+            endTime = defaultExam.getEndTime();
+            binding.textDueDate.setText(dueDate.getDayOfMonth() + "-" + (dueDate.getMonthValue() + 1) + "-" + dueDate.getYear());
+            binding.textStartTime.setText(dueTime.format(new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter()));
+            binding.textEndTime.setText(endTime.format(new DateTimeFormatterBuilder().appendPattern("hh:mm a").toFormatter()));
+        }
 
         efab.setOnClickListener((view) -> {
             String examName = binding.examName.getText().toString();
@@ -106,8 +103,15 @@ public class AddExamFragment extends Fragment {
                 return;
             }
 
-            DataStore ds = new DataStore(requireContext());
-            ds.addExam(new Exam(examName, assignedClass, examDesc, officalDueDate, endTime, examLoc));
+            Exam newExam = new Exam(examName, assignedClass, examDesc, officalDueDate, endTime, examLoc);
+            List<Exam> exams = activity.getDataStore().getExams();
+
+            if (defaultExam != null) {
+                // Edited
+                exams.set(exams.indexOf(defaultExam), newExam);
+            } else {
+                exams.add(newExam);
+            }
 
             NavHostFragment.findNavController(this).navigate(AddExamFragmentDirections.actionAddExamFragmentToFirstFragment());
         });
@@ -122,7 +126,7 @@ public class AddExamFragment extends Fragment {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     binding.textDueDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                    dueDate = LocalDate.of(year, monthOfYear, dayOfMonth);
+                    dueDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth);
                     System.out.println(dueDate.toString());
                 }
             }, year, month, day);
@@ -170,7 +174,7 @@ public class AddExamFragment extends Fragment {
 
     public void createDropdown() {
         classSelected = (Spinner) binding.classDropdown;
-        DataStore ds = new DataStore(requireContext());
+        DataStore ds = ((MainActivity) requireActivity()).getDataStore();
         String[] classes = getNames(ds);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, classes);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

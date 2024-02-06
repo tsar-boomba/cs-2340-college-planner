@@ -1,6 +1,5 @@
 package com.example.college_planner;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +11,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.college_planner.databinding.FragmentMainBinding;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.time.Duration;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +29,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMainBinding.inflate(inflater, container, false);
-        dataStore = new DataStore(requireActivity());
+        dataStore = ((MainActivity) requireActivity()).getDataStore();
         NavController navController = NavHostFragment.findNavController(MainFragment.this);
 
         FloatingActionButton fab = (FloatingActionButton) requireActivity().findViewById(R.id.fab);
@@ -112,7 +107,8 @@ public class MainFragment extends Fragment {
         events.addAll(assignments);
         events.addAll(todos);
 
-        TodayExpandableListAdapter expandableListAdapter = new TodayExpandableListAdapter(requireActivity(), dataStore, "Today", events);
+
+        TodayExpandableListAdapter expandableListAdapter = new TodayExpandableListAdapter(requireActivity(), dataStore, "Today", events.stream().filter((event) -> event.shouldRender(LocalDateTime.now())).collect(Collectors.toList()));
         binding.todayList.setAdapter(expandableListAdapter);
         binding.todayList.expandGroup(0);
 

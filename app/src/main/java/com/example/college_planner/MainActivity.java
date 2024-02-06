@@ -15,6 +15,7 @@ import com.example.college_planner.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private static DataStore dataStore = new DataStore();
     private boolean menuOpen;
 
     @Override
@@ -55,5 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
     private NavController navController() {
         return Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+    }
+
+    public DataStore getDataStore() {
+        return dataStore;
     }
 }
