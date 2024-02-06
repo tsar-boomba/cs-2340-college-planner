@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#2196F3"
+                android:background="#ED7B84"
                 android:padding="10dp"
                 android:text="Add Todo" />
 
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#FF9800"
+                android:background="#50C5B7"
                 android:padding="10dp"
                 android:text="Add Exam" />
 
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#9C27B0"
+                android:background="#FCA311"
                 android:padding="10dp"
                 android:text="Add Assignment" />
 
@@ -57,8 +57,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#9C27B0"
+                android:background="#B14AED"
                 android:padding="10dp"
+                android:textColor="@android:color/white"
                 android:text="Add Class" />
 
             <TextView
@@ -66,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#9C27B0"
+                android:background="#302B27"
                 android:padding="10dp"
                 android:text="Close"
                 android:textColor="@android:color/white"

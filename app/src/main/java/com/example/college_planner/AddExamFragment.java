@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +43,7 @@ public class AddExamFragment extends Fragment {
     private LocalDate dueDate = null;
     private LocalTime dueTime = null;
     private LocalTime endTime = null;
-    private ArrayList<Class> classArr;
+    private List<Class> classArr;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

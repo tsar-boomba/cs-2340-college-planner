@@ -28,6 +28,8 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
+
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -49,7 +51,7 @@ public class AddClassFragment extends Fragment {
     private LocalTime startTime;
     private LocalTime endTime;
     private int mDefaultColor = 0;
-    private ArrayList<Class> currentClasses;
+    private List<Class> currentClasses;
 
     public AddClassFragment() {
         // Required empty public constructor
