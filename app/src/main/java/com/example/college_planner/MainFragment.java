@@ -112,11 +112,11 @@ public class MainFragment extends Fragment {
         events.addAll(assignments);
         events.addAll(todos);
 
-        TodayExpandableListAdapter expandableListAdapter = new TodayExpandableListAdapter(requireActivity(), "Today", events);
+        TodayExpandableListAdapter expandableListAdapter = new TodayExpandableListAdapter(requireActivity(), dataStore, "Today", events);
         binding.todayList.setAdapter(expandableListAdapter);
         binding.todayList.expandGroup(0);
 
-        binding.classList.setAdapter(new ClassListAdapter(classes, dataStore.getAssignments(), dataStore.getExams()));
+        binding.classList.setAdapter(new ClassListAdapter(dataStore, classes, dataStore.getAssignments(), dataStore.getExams()));
     }
 
     @Override

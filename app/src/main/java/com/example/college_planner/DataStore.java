@@ -8,9 +8,7 @@ import com.google.gson.Gson;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DataStore {
     Gson gson;
@@ -57,12 +55,20 @@ public class DataStore {
         return get("exams", Exam.class);
     }
 
+    public void setExams(List<Exam> exams) {
+        set("exams", exams);
+    }
+
     public void addTodo(Todo todo) {
         add("todos", todo);
     }
 
     public List<Todo> getTodos() {
         return get("todos", Todo.class);
+    }
+
+    public void setTodos(List<Todo> todos) {
+        set("todos", todos);
     }
 
     private <T> void add(String key, T o) {

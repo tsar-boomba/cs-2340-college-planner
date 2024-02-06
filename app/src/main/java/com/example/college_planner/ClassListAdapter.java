@@ -22,8 +22,10 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
     private final List<Class> data;
     private final List<Assignment> assignments;
     private final List<Exam> exams;
+    private final DataStore dataStore;
 
-    public ClassListAdapter(List<Class> data, List<Assignment> assignments, List<Exam> exams) {
+    public ClassListAdapter(DataStore dataStore, List<Class> data, List<Assignment> assignments, List<Exam> exams) {
+        this.dataStore = dataStore;
         this.data = data;
         this.assignments = assignments;
         this.exams = exams;
@@ -36,7 +38,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         ClassListViewBinding binding = ClassListViewBinding.inflate(inflater, viewGroup, false);
 
-        return new ViewHolder(binding, assignments, exams);
+        return new ViewHolder(dataStore, binding, data, assignments, exams);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -56,13 +58,17 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ClassListViewBinding binding;
         private final Activity activity;
+        private final List<Class> classes;
         private final List<Assignment> assignments;
         private final List<Exam> exams;
+        private final DataStore dataStore;
 
-        public ViewHolder(ClassListViewBinding binding, List<Assignment> assignments, List<Exam> exams) {
+        public ViewHolder(DataStore dataStore, ClassListViewBinding binding, List<Class> classes, List<Assignment> assignments, List<Exam> exams) {
             super(binding.getRoot());
+            this.dataStore = dataStore;
             this.binding = binding;
             this.activity = (Activity) binding.getRoot().getContext();
+            this.classes = classes;
             this.assignments = assignments;
             this.exams = exams;
         }
@@ -84,7 +90,9 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                     classDialogItemBinding.dialogItemTime.setText(exam.time().orElse(""));
 
                     classDialogItemBinding.dialogClassDelete.setOnClickListener((_view) -> {
-                        // TODO: Delete this exam
+                        exams.remove(exam);
+                        dataStore.setExams(exams);
+                        activity.recreate();
                     });
 
                     classDialogItemBinding.dialogClassEdit.setOnClickListener((_view) -> {
@@ -101,7 +109,9 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                     classDialogItemBinding.dialogItemTime.setText(assignment.time().orElse(""));
 
                     classDialogItemBinding.dialogClassDelete.setOnClickListener((_view) -> {
-                        // TODO: Delete this assignment
+                        assignments.remove(assignment);
+                        dataStore.setAssignments(assignments);
+                        activity.recreate();
                     });
 
                     classDialogItemBinding.dialogClassEdit.setOnClickListener((_view) -> {
@@ -112,7 +122,12 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                 }
 
                 AlertDialog dialog = builder.setTitle(_class.getName() + " Assignments").setView(classDialogBinding.getRoot()).setNeutralButton("Delete", (dialog1, which) -> {
-                    // TODO: Delete class
+                    classes.remove(_class);
+                    exams.removeIf((exam) -> exam._class.equals(_class));
+                    assignments.removeIf((assignment) -> assignment._class.equals(_class));
+                    dataStore.setClasses(classes);
+                    dataStore.setExams(exams);
+                    dataStore.setAssignments(assignments);
                     activity.recreate();
                 }).setNegativeButton("Edit", (dialog1, which) -> {
                     // TODO: Edit class
