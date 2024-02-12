@@ -101,17 +101,22 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.View
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         // Remove all but spinner
                         classDialogBinding.getRoot().removeViews(1, classDialogBinding.getRoot().getChildCount() - 1);
-                        assignments.sort((a, b) -> {
+                        System.out.println("Selected Sort");
+                        filteredAssignments.sort((a, b) -> {
                             String selectedSort = (String) classDialogBinding.classDialogSortSpinner.getSelectedItem();
                             if (selectedSort.isEmpty() || selectedSort.equals("None")) {
                                 // Do nothing
+                                System.out.println("None sort");
                                 return 0;
                             } else if (selectedSort.equals("Soonest")) {
+                                System.out.println("Soonest sort");
                                 return a.getDueDate().compareTo(b.getDueDate());
                             } else {
+                                System.out.println("Latest sort");
                                 return b.getDueDate().compareTo(a.getDueDate());
                             }
                         });
+                        System.out.println("Sorted assignments " + filteredAssignments);
 
                         // Go through assignments for this class
                         for (Assignment assignment : filteredAssignments) {
